@@ -1,7 +1,6 @@
 import streamlit as st
 import pandas as pd
 import networkx as nx
-import matplotlib.pyplot as plt
 
 from route_optimization import build_graph, get_shortest_path
 from delay_prediction import train_model, predict_delay
@@ -12,13 +11,13 @@ st.markdown("""
 <style>
     .big-title { font-size: 2.2rem; font-weight: 800; color: #1b4332; text-align: center; margin-bottom: 0.2rem; }
     .subtitle  { text-align: center; color: #555; margin-bottom: 2rem; font-size: 1rem; }
-    .card      { background: #f0fdf4; border-left: 5px solid #2d6a4f; border-radius: 8px; padding: 1rem 1.5rem; margin: 1rem 0; }
-    .card-warn { background: #fffbeb; border-left: 5px solid #f59e0b; border-radius: 8px; padding: 1rem 1.5rem; margin: 1rem 0; }
+    .card      { background: #f0fdf4; border-left: 5px solid #2d6a4f; border-radius: 8px; padding: 1rem 1.5rem; margin: 1rem 0; color: #1b4332; }
+    .card *    { color: #1b4332 !important; }
+    .card-warn { background: #fffbeb; border-left: 5px solid #f59e0b; border-radius: 8px; padding: 1rem 1.5rem; margin: 1rem 0; color: #7c4a00; }
 </style>
 """, unsafe_allow_html=True)
 
 st.markdown('<div class="big-title">🚆 Smart Train Route Optimizer</div>', unsafe_allow_html=True)
-st.markdown('<div class="subtitle">Team: The Illuminators &nbsp;|&nbsp; DAA Project 2025-26 &nbsp;|&nbsp; Dijkstra\'s Algorithm + Random Forest ML</div>', unsafe_allow_html=True)
 
 @st.cache_resource
 def load_everything():
@@ -29,7 +28,17 @@ def load_everything():
 G, model = load_everything()
 stations = sorted(list(G.nodes()))
 
-page = st.sidebar.radio("📌 Go to", ["🏠 Home", "🗺️ Find Route", "📊 Network Map", "ℹ️ About"])
+def format_time(minutes):
+    minutes = int(minutes)
+    if minutes < 60:
+        return f"{minutes} min"
+    h = minutes // 60
+    m = minutes % 60
+    if m == 0:
+        return f"{h} hr"
+    return f"{h} hr {m} min"
+
+page = st.sidebar.radio("📌 Go to", ["🏠 Home", "🗺️ Find Route", "📊 Network Map"])
 
 
 if page == "🏠 Home":
@@ -101,9 +110,9 @@ elif page == "🗺️ Find Route":
             final_eta = total_time + delay
 
             c1, c2, c3 = st.columns(3)
-            c1.metric("🕐 Base Travel Time", f"{total_time} min")
-            c2.metric("⚠️ Predicted Delay",  f"{delay} min")
-            c3.metric("🎯 Final ETA",         f"{final_eta} min")
+            c1.metric("🕐 Base Travel Time", format_time(total_time))
+            c2.metric("⚠️ Predicted Delay",  format_time(delay))
+            c3.metric("🎯 Final ETA",         format_time(final_eta))
 
             if delay < 10:
                 status = "🟢 Train is likely ON TIME"
@@ -116,201 +125,157 @@ elif page == "🗺️ Find Route":
 
 
 elif page == "📊 Network Map":
-    st.subheader("📊 Indian Railway Network Graph")
+    st.subheader("🗺️ Indian Railway Network — Interactive Map")
+    st.caption("Drag stations around • Hover to see details • Scroll to zoom")
 
-    fig, ax = plt.subplots(figsize=(14, 9))
-    pos = nx.spring_layout(G, seed=42, k=2.5)
+    import math
 
-    nx.draw_networkx_nodes(G, pos, node_color="#2d6a4f", node_size=600, ax=ax)
-    nx.draw_networkx_labels(G, pos, font_size=7, font_color="white", font_weight="bold", ax=ax)
-    nx.draw_networkx_edges(G, pos, edge_color="#95d5b2", width=1.8, ax=ax)
+    # Fixed positions based on rough geography of India
+    GEO_POS = {
+        "Amritsar":       (150, 80),
+        "Chandigarh":     (220, 130),
+        "New Delhi":      (280, 200),
+        "Jaipur":         (210, 290),
+        "Jodhpur":        (130, 340),
+        "Agra":           (340, 260),
+        "Lucknow":        (430, 240),
+        "Gwalior":        (320, 310),
+        "Varanasi":       (510, 270),
+        "Patna":          (580, 250),
+        "Bhopal":         (330, 390),
+        "Ahmedabad":      (170, 410),
+        "Surat":          (190, 490),
+        "Mumbai":         (190, 570),
+        "Pune":           (220, 620),
+        "Nagpur":         (390, 460),
+        "Kolkata":        (650, 320),
+        "Bhubaneswar":    (650, 430),
+        "Hyderabad":      (390, 560),
+        "Visakhapatnam":  (580, 510),
+        "Bangalore":      (370, 660),
+        "Chennai":        (490, 660),
+    }
 
-    edge_labels = {(u, v): f"{d['distance']}km" for u, v, d in G.edges(data=True)}
-    nx.draw_networkx_edge_labels(G, pos, edge_labels, font_size=6, ax=ax)
+    nodes_js = ""
+    for station, (x, y) in GEO_POS.items():
+        nodes_js += f"""
+        nodes.push({{
+            id: '{station}',
+            label: '{station}',
+            x: {x * 1.8},
+            y: {y * 1.6},
+            fixed: false,
+            physics: false
+        }});"""
 
-    ax.set_title("Railway Network — Stations & Routes", fontsize=15, fontweight="bold", pad=20)
-    ax.axis("off")
-    st.pyplot(fig)
-    st.info(f"Total: **{G.number_of_nodes()} stations** and **{G.number_of_edges()} routes**")
+    edges_js = ""
+    for u, v, d in G.edges(data=True):
+        edges_js += f"""
+        edges.push({{
+            from: '{u}',
+            to: '{v}',
+            label: '{d["distance"]}km',
+            title: '{u} → {v}<br>{d["distance"]} km · {d["time"]} min'
+        }});"""
 
-
-elif page == "ℹ️ About":
-    st.markdown("""
-    <style>
-    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=DM+Sans:wght@300;400;500&display=swap');
-
-    .about-hero {
-        background: linear-gradient(135deg, #0f2027, #1b4332, #203a43);
-        border-radius: 16px;
-        padding: 3rem 2.5rem;
-        text-align: center;
-        margin-bottom: 2.5rem;
-    }
-    .about-hero h1 {
-        font-family: 'Playfair Display', serif;
-        font-size: 2.8rem;
-        color: #ffffff;
-        margin: 0 0 0.5rem 0;
-        letter-spacing: -1px;
-    }
-    .about-hero p {
-        font-family: 'DM Sans', sans-serif;
-        color: #95d5b2;
-        font-size: 1.05rem;
-        font-weight: 300;
-        margin: 0;
-    }
-    .section-label {
-        font-family: 'DM Sans', sans-serif;
-        font-size: 0.7rem;
-        font-weight: 500;
-        letter-spacing: 3px;
-        text-transform: uppercase;
-        color: #2d6a4f;
-        margin-bottom: 1rem;
-    }
-    .mission-box {
-        background: #f8fffe;
-        border: 1px solid #d8f3dc;
-        border-radius: 12px;
-        padding: 2rem;
-        margin-bottom: 2.5rem;
-        font-family: 'DM Sans', sans-serif;
-        font-size: 1.05rem;
-        color: #1b4332;
-        line-height: 1.8;
-        font-weight: 300;
-    }
-    .team-grid {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 1.2rem;
-        margin-bottom: 2.5rem;
-    }
-    .team-card {
-        background: white;
-        border: 1px solid #e8f5e9;
-        border-radius: 12px;
-        padding: 1.5rem;
-        display: flex;
-        align-items: center;
-        gap: 1rem;
-        box-shadow: 0 2px 12px rgba(45,106,79,0.07);
-        transition: transform 0.2s;
-    }
-    .team-avatar {
-        width: 52px;
-        height: 52px;
-        border-radius: 50%;
-        background: linear-gradient(135deg, #1b4332, #52b788);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 1.4rem;
-        flex-shrink: 0;
-    }
-    .team-name {
-        font-family: 'DM Sans', sans-serif;
-        font-weight: 500;
-        font-size: 0.95rem;
-        color: #1b4332;
-        margin: 0 0 0.2rem 0;
-    }
-    .team-role {
-        font-family: 'DM Sans', sans-serif;
-        font-size: 0.78rem;
-        color: #888;
-        margin: 0 0 0.2rem 0;
-        font-weight: 300;
-    }
-    .team-id {
-        font-family: 'DM Sans', sans-serif;
-        font-size: 0.72rem;
-        color: #2d6a4f;
-        margin: 0;
-        font-weight: 500;
-    }
-    .stack-row {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 0.7rem;
-    }
-    .stack-pill {
-        background: #1b4332;
-        color: #95d5b2;
-        font-family: 'DM Sans', sans-serif;
-        font-size: 0.8rem;
-        font-weight: 500;
-        padding: 0.4rem 1rem;
-        border-radius: 999px;
-        letter-spacing: 0.5px;
-    }
-    .divider {
-        border: none;
-        border-top: 1px solid #e8f5e9;
-        margin: 2rem 0;
-    }
-    </style>
-
-    <div class="about-hero">
-        <h1>The Illuminators</h1>
-        <p>Smart Train Route Optimization &amp; Delay Prediction System &nbsp;·&nbsp; DAA Project 2025–26</p>
-    </div>
-
-    <div class="section-label">Our Mission</div>
-    <div class="mission-box">
-        Railway passengers deserve more than static timetables. We built a smart system that finds
-        the <strong>fastest route</strong> between any two stations and predicts <strong>how late your train might be</strong>
-        — so you can plan your journey with confidence, not guesswork.
-    </div>
-
-    <hr class="divider">
-
-    <div class="section-label">The Team</div>
-    <div class="team-grid">
-        <div class="team-card">
-            <div class="team-avatar">👨‍💻</div>
-            <div>
-                <p class="team-name">Abhay Singh</p>
-                <p class="team-role">Team Lead · ML & Dataset</p>
-                <p class="team-id">ID: 240111781</p>
-            </div>
+    html = f"""
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.js"></script>
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.css" rel="stylesheet">
+        <style>
+            body {{ margin: 0; background: #0a0f1e; }}
+            #network {{
+                width: 100%;
+                height: 580px;
+                background: radial-gradient(ellipse at center, #0d1b2a 0%, #0a0f1e 100%);
+                border-radius: 12px;
+                border: 1px solid #1e3a5f;
+            }}
+            #stats {{
+                display: flex;
+                gap: 1rem;
+                padding: 0.8rem 1rem;
+                background: #0d1b2a;
+                border-radius: 0 0 12px 12px;
+                border: 1px solid #1e3a5f;
+                border-top: none;
+            }}
+            .stat {{
+                color: #52b788;
+                font-family: monospace;
+                font-size: 0.85rem;
+            }}
+            .stat span {{ color: #ffffff; font-weight: bold; }}
+        </style>
+    </head>
+    <body>
+        <div id="network"></div>
+        <div id="stats">
+            <div class="stat">🚉 Stations: <span>{G.number_of_nodes()}</span></div>
+            <div class="stat">🛤️ Routes: <span>{G.number_of_edges()}</span></div>
+            <div class="stat">💡 Tip: <span>Hover over a route to see distance & time</span></div>
         </div>
-        <div class="team-card">
-            <div class="team-avatar">🗺️</div>
-            <div>
-                <p class="team-name">Anuj Rawat</p>
-                <p class="team-role">Route Optimization</p>
-                <p class="team-id">ID: 24011939</p>
-            </div>
-        </div>
-        <div class="team-card">
-            <div class="team-avatar">🎨</div>
-            <div>
-                <p class="team-name">Amit Pandey</p>
-                <p class="team-role">Frontend & UI</p>
-                <p class="team-id">ID: 240112243</p>
-            </div>
-        </div>
-        <div class="team-card">
-            <div class="team-avatar">🔗</div>
-            <div>
-                <p class="team-name">Diksha</p>
-                <p class="team-role">Integration & Testing</p>
-                <p class="team-id">ID: 24012030</p>
-            </div>
-        </div>
-    </div>
+        <script>
+            var nodes = [];
+            var edges = [];
+            {nodes_js}
+            {edges_js}
 
-    <hr class="divider">
+            var container = document.getElementById('network');
+            var data = {{
+                nodes: new vis.DataSet(nodes),
+                edges: new vis.DataSet(edges)
+            }};
+            var options = {{
+                nodes: {{
+                    shape: 'dot',
+                    size: 14,
+                    color: {{
+                        background: '#52b788',
+                        border: '#95d5b2',
+                        highlight: {{ background: '#ffd166', border: '#ffa500' }}
+                    }},
+                    font: {{
+                        color: '#ffffff',
+                        size: 11,
+                        face: 'monospace',
+                        strokeWidth: 3,
+                        strokeColor: '#0a0f1e'
+                    }},
+                    borderWidth: 2,
+                    shadow: {{ enabled: true, color: '#52b78860', size: 10 }}
+                }},
+                edges: {{
+                    color: {{ color: '#1e6091', highlight: '#ffd166', hover: '#90e0ef' }},
+                    width: 1.5,
+                    font: {{
+                        color: '#90e0ef',
+                        size: 9,
+                        face: 'monospace',
+                        strokeWidth: 2,
+                        strokeColor: '#0a0f1e',
+                        align: 'middle'
+                    }},
+                    smooth: {{ type: 'curvedCW', roundness: 0.1 }},
+                    shadow: true
+                }},
+                interaction: {{
+                    hover: true,
+                    tooltipDelay: 100,
+                    zoomView: true,
+                    dragView: true
+                }},
+                physics: {{ enabled: false }}
+            }};
+            new vis.Network(container, data, options);
+        </script>
+    </body>
+    </html>
+    """
 
-    <div class="section-label">Built With</div>
-    <div class="stack-row">
-        <span class="stack-pill">Python</span>
-        <span class="stack-pill">Streamlit</span>
-        <span class="stack-pill">NetworkX</span>
-        <span class="stack-pill">Scikit-learn</span>
-        <span class="stack-pill">Pandas</span>
-        <span class="stack-pill">Matplotlib</span>
-    </div>
-    """, unsafe_allow_html=True)
+    st.components.v1.html(html, height=650, scrolling=False)
+
+
+
