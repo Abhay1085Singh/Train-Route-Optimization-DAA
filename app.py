@@ -135,35 +135,182 @@ elif page == "📊 Network Map":
 
 
 elif page == "ℹ️ About":
-    st.subheader("ℹ️ About This Project")
     st.markdown("""
-    ### 🎯 Problem We Are Solving
-    Existing railway apps only show static timetables. They don't find the smartest route or predict delays.
-    Our system does both — using Dijkstra's Algorithm and Random Forest ML.
+    <style>
+    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=DM+Sans:wght@300;400;500&display=swap');
 
-    ---
-    ### 👨‍💻 Team — The Illuminators
+    .about-hero {
+        background: linear-gradient(135deg, #0f2027, #1b4332, #203a43);
+        border-radius: 16px;
+        padding: 3rem 2.5rem;
+        text-align: center;
+        margin-bottom: 2.5rem;
+    }
+    .about-hero h1 {
+        font-family: 'Playfair Display', serif;
+        font-size: 2.8rem;
+        color: #ffffff;
+        margin: 0 0 0.5rem 0;
+        letter-spacing: -1px;
+    }
+    .about-hero p {
+        font-family: 'DM Sans', sans-serif;
+        color: #95d5b2;
+        font-size: 1.05rem;
+        font-weight: 300;
+        margin: 0;
+    }
+    .section-label {
+        font-family: 'DM Sans', sans-serif;
+        font-size: 0.7rem;
+        font-weight: 500;
+        letter-spacing: 3px;
+        text-transform: uppercase;
+        color: #2d6a4f;
+        margin-bottom: 1rem;
+    }
+    .mission-box {
+        background: #f8fffe;
+        border: 1px solid #d8f3dc;
+        border-radius: 12px;
+        padding: 2rem;
+        margin-bottom: 2.5rem;
+        font-family: 'DM Sans', sans-serif;
+        font-size: 1.05rem;
+        color: #1b4332;
+        line-height: 1.8;
+        font-weight: 300;
+    }
+    .team-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1.2rem;
+        margin-bottom: 2.5rem;
+    }
+    .team-card {
+        background: white;
+        border: 1px solid #e8f5e9;
+        border-radius: 12px;
+        padding: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        box-shadow: 0 2px 12px rgba(45,106,79,0.07);
+        transition: transform 0.2s;
+    }
+    .team-avatar {
+        width: 52px;
+        height: 52px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #1b4332, #52b788);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.4rem;
+        flex-shrink: 0;
+    }
+    .team-name {
+        font-family: 'DM Sans', sans-serif;
+        font-weight: 500;
+        font-size: 0.95rem;
+        color: #1b4332;
+        margin: 0 0 0.2rem 0;
+    }
+    .team-role {
+        font-family: 'DM Sans', sans-serif;
+        font-size: 0.78rem;
+        color: #888;
+        margin: 0 0 0.2rem 0;
+        font-weight: 300;
+    }
+    .team-id {
+        font-family: 'DM Sans', sans-serif;
+        font-size: 0.72rem;
+        color: #2d6a4f;
+        margin: 0;
+        font-weight: 500;
+    }
+    .stack-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.7rem;
+    }
+    .stack-pill {
+        background: #1b4332;
+        color: #95d5b2;
+        font-family: 'DM Sans', sans-serif;
+        font-size: 0.8rem;
+        font-weight: 500;
+        padding: 0.4rem 1rem;
+        border-radius: 999px;
+        letter-spacing: 0.5px;
+    }
+    .divider {
+        border: none;
+        border-top: 1px solid #e8f5e9;
+        margin: 2rem 0;
+    }
+    </style>
 
-    | Member | ID | Role |
-    |--------|----|------|
-    | Abhay Singh (Lead) | 240111781 | ML & Dataset |
-    | Anuj Rawat | 24011939 | Route Optimization (DAA) |
-    | Amit Pandey | 240112243 | Frontend & UI |
-    | Diksha | 24012030 | Integration & Testing |
+    <div class="about-hero">
+        <h1>The Illuminators</h1>
+        <p>Smart Train Route Optimization &amp; Delay Prediction System &nbsp;·&nbsp; DAA Project 2025–26</p>
+    </div>
 
-    ---
-    ### 🧠 Algorithms Used
+    <div class="section-label">Our Mission</div>
+    <div class="mission-box">
+        Railway passengers deserve more than static timetables. We built a smart system that finds
+        the <strong>fastest route</strong> between any two stations and predicts <strong>how late your train might be</strong>
+        — so you can plan your journey with confidence, not guesswork.
+    </div>
 
-    **Dijkstra's Algorithm**
-    - Finds shortest path in a weighted graph
-    - Time Complexity: O((V + E) log V)
-    - Stations = nodes, Routes = edges with distance/time weights
+    <hr class="divider">
 
-    **Random Forest Regression**
-    - 100 decision trees working together
-    - Predicts delay based on: stops, distance, hour, day, monsoon, holiday
+    <div class="section-label">The Team</div>
+    <div class="team-grid">
+        <div class="team-card">
+            <div class="team-avatar">👨‍💻</div>
+            <div>
+                <p class="team-name">Abhay Singh</p>
+                <p class="team-role">Team Lead · ML & Dataset</p>
+                <p class="team-id">ID: 240111781</p>
+            </div>
+        </div>
+        <div class="team-card">
+            <div class="team-avatar">🗺️</div>
+            <div>
+                <p class="team-name">Anuj Rawat</p>
+                <p class="team-role">Route Optimization</p>
+                <p class="team-id">ID: 24011939</p>
+            </div>
+        </div>
+        <div class="team-card">
+            <div class="team-avatar">🎨</div>
+            <div>
+                <p class="team-name">Amit Pandey</p>
+                <p class="team-role">Frontend & UI</p>
+                <p class="team-id">ID: 240112243</p>
+            </div>
+        </div>
+        <div class="team-card">
+            <div class="team-avatar">🔗</div>
+            <div>
+                <p class="team-name">Diksha</p>
+                <p class="team-role">Integration & Testing</p>
+                <p class="team-id">ID: 24012030</p>
+            </div>
+        </div>
+    </div>
 
-    ---
-    ### 🛠️ Tech Stack
-    Python · NetworkX · Scikit-learn · Pandas · Streamlit · Matplotlib
-    """)
+    <hr class="divider">
+
+    <div class="section-label">Built With</div>
+    <div class="stack-row">
+        <span class="stack-pill">Python</span>
+        <span class="stack-pill">Streamlit</span>
+        <span class="stack-pill">NetworkX</span>
+        <span class="stack-pill">Scikit-learn</span>
+        <span class="stack-pill">Pandas</span>
+        <span class="stack-pill">Matplotlib</span>
+    </div>
+    """, unsafe_allow_html=True)
