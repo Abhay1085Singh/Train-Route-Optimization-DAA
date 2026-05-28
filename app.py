@@ -5,12 +5,19 @@
 #  METHOD  : Flask REST API — connects all modules
 # ============================================================
 
+import os
 from flask import Flask, render_template, request, jsonify
-from datetime import datetime, timedelta
-from route_optimization import build_graph, get_shortest_path, get_alternate_routes
-from delay_prediction import train_model, predict_delay, get_model_metrics, get_feature_importance
 
-app   = Flask(__name__)
+# Dynamically calculate absolute directory handles
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+TEMPLATE_DIR = os.path.join(BASE_DIR, 'templates')
+STATIC_DIR = os.path.join(BASE_DIR, 'static')
+
+app = Flask(
+    __name__,
+    template_folder=TEMPLATE_DIR,
+    static_folder=STATIC_DIR
+)
 G     = build_graph()
 model = train_model()
 
