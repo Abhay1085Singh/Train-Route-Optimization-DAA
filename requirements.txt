@@ -1,0 +1,5 @@
+flask
+networkx
+scikit-learn
+pandas
+numpy

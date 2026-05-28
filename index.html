@@ -1,0 +1,132 @@
+<!-- ============================================================
+     FILE    : index.html
+     MEMBER  : Amit Pandey (Student ID: 240112243)
+     ROLE    : Frontend & User Interface Module
+     ============================================================ -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Train Route Optimizer</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.js"></script>
+    <link  href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.css" rel="stylesheet">
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+    <div class="logo">🚆 <span>Train</span>Route</div>
+    <button class="nb on" onclick="go('home',this)">🏠 &nbsp; Home</button>
+    <button class="nb"    onclick="go('find',this)">🗺️ &nbsp; Find Route</button>
+    <button class="nb"    onclick="go('alt',this)"> 🔁 &nbsp; Alternate Routes</button>
+    <button class="nb"    onclick="go('acc',this)"> 📈 &nbsp; Model Accuracy</button>
+    <button class="nb"    onclick="go('map',this)"> 📊 &nbsp; Network Map</button>
+</aside>
+
+<!-- MAIN -->
+<main class="main">
+
+    <!-- HOME -->
+    <div class="page on" id="p-home">
+        <div class="ptitle">Smart Train Route Optimizer</div>
+        <div class="psub">Dijkstra's Algorithm + Random Forest ML &nbsp;·&nbsp; The Illuminators</div>
+        <div class="stats">
+            <div class="stat"><div class="slbl">Stations</div><div class="sval">{{ total_stations }}</div></div>
+            <div class="stat"><div class="slbl">Routes</div><div class="sval">{{ total_routes }}</div></div>
+            <div class="stat"><div class="slbl">ML Model</div><div class="sval" style="font-size:1rem;margin-top:.5rem">Random Forest</div></div>
+        </div>
+        <div class="card">
+            <div class="ctitle">How does this work?</div>
+            <ul class="how">
+                <li><span class="n">1</span> Select source and destination station</li>
+                <li><span class="n">2</span> Choose to optimize by distance or time</li>
+                <li><span class="n">3</span> <b style="color:#22c55e">Dijkstra's Algorithm</b> finds the best route through the railway graph</li>
+                <li><span class="n">4</span> <b style="color:#22c55e">Random Forest ML</b> predicts expected delay in minutes</li>
+                <li><span class="n">5</span> Final ETA = Travel Time + Predicted Delay</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- FIND ROUTE -->
+    <div class="page" id="p-find">
+        <div class="ptitle">Find Route</div>
+        <div class="psub">Shortest or fastest route between any two stations</div>
+        <div class="card">
+            <div class="frow">
+                <div class="fcol">
+                    <label class="flbl">From</label>
+                    <select id="fs">{% for s in stations %}<option {% if s=='New Delhi' %}selected{% endif %}>{{ s }}</option>{% endfor %}</select>
+                </div>
+                <div class="fcol">
+                    <label class="flbl">To</label>
+                    <select id="fd">{% for s in stations %}<option {% if s=='Mumbai' %}selected{% endif %}>{{ s }}</option>{% endfor %}</select>
+                </div>
+            </div>
+            <div class="fcol" style="margin-bottom:.9rem">
+                <label class="flbl">Optimize By</label>
+                <div class="rrow">
+                    <div class="ropt on" onclick="setWt(this,'distance')">📏 Shortest Distance</div>
+                    <div class="ropt"    onclick="setWt(this,'time')">⏱️ Fastest Time</div>
+                </div>
+            </div>
+            <div class="fcol">
+                <label class="flbl">Departure Hour</label>
+                <div class="srow">
+                    <input type="range" id="fh" min="0" max="23" value="10" oninput="upH('fh','fhv')">
+                    <span class="sval" id="fhv">10:00 AM</span>
+                </div>
+            </div>
+            <button class="btn" onclick="findRoute()">🔍 Find Optimal Route</button>
+        </div>
+        <div id="fout"></div>
+    </div>
+
+    <!-- ALTERNATE ROUTES -->
+    <div class="page" id="p-alt">
+        <div class="ptitle">Alternate Routes</div>
+        <div class="psub">Compare top 3 routes between stations</div>
+        <div class="card">
+            <div class="frow">
+                <div class="fcol">
+                    <label class="flbl">From</label>
+                    <select id="as">{% for s in stations %}<option {% if s=='New Delhi' %}selected{% endif %}>{{ s }}</option>{% endfor %}</select>
+                </div>
+                <div class="fcol">
+                    <label class="flbl">To</label>
+                    <select id="ad">{% for s in stations %}<option {% if s=='Mumbai' %}selected{% endif %}>{{ s }}</option>{% endfor %}</select>
+                </div>
+            </div>
+            <div class="fcol">
+                <label class="flbl">Departure Hour</label>
+                <div class="srow">
+                    <input type="range" id="ah" min="0" max="23" value="10" oninput="upH('ah','ahv')">
+                    <span class="sval" id="ahv">10:00 AM</span>
+                </div>
+            </div>
+            <button class="btn" onclick="findAlt()">🔍 Find All Routes</button>
+        </div>
+        <div id="aout"></div>
+    </div>
+
+    <!-- MODEL ACCURACY -->
+    <div class="page" id="p-acc">
+        <div class="ptitle">Model Accuracy</div>
+        <div class="psub">Random Forest Regression — performance report</div>
+        <div id="accout"><p class="loader">⏳ Loading...</p></div>
+    </div>
+
+    <!-- NETWORK MAP -->
+    <div class="page" id="p-map">
+        <div class="ptitle">Network Map</div>
+        <div class="psub">Hover routes · Drag stations · Scroll to zoom</div>
+        <div id="map"></div>
+    </div>
+
+</main>
+
+<script src="/static/js/main.js"></script>
+</body>
+</html>
