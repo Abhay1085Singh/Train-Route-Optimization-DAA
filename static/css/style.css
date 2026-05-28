@@ -101,7 +101,7 @@ tr:last-child td{border-bottom:none}
 /* BAR CHART */
 .brow{display:flex;align-items:center;gap:.7rem;margin:.4rem 0}
 .blbl{width:125px;font-size:.78rem;color:var(--muted);text-align:right;flex-shrink:0}
-.btrk{flex:1;background:var(--bdr);border-radius:999px;height:7px}
+.btrk { flex:1; background:var(--bdr); border-radius:999px; height:7px; overflow:hidden; }
 .bfil{height:7px;border-radius:999px;background:var(--green);transition:width 1s ease;width:0}
 .bval{width:40px;font-size:.76rem;color:var(--green);font-weight:600}
 
