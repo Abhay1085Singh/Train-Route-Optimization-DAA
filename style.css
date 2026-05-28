@@ -1,0 +1,120 @@
+/* ============================================================
+   FILE    : style.css
+   MEMBER  : Amit Pandey (Student ID: 240112243)
+   ROLE    : Frontend & User Interface Module
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@300;400;500&display=swap');
+
+*{box-sizing:border-box;margin:0;padding:0}
+
+:root{
+    --bg:#080c14; --surf:#0f1824; --bdr:#1a2d45;
+    --green:#22c55e; --gdim:#166534;
+    --yellow:#eab308; --red:#ef4444; --blue:#3b82f6;
+    --text:#f0f4f8; --muted:#64748b; --card:#111827;
+}
+
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);display:flex;min-height:100vh}
+
+/* SIDEBAR */
+.sidebar{width:220px;min-height:100vh;background:var(--surf);border-right:1px solid var(--bdr);padding:1.4rem .75rem;position:fixed;display:flex;flex-direction:column;gap:.2rem}
+.logo{font-family:'Syne',sans-serif;font-size:1rem;font-weight:800;color:var(--green);padding:0 .5rem 1.2rem;border-bottom:1px solid var(--bdr);margin-bottom:.6rem}
+.logo span{color:var(--text)}
+.nb{display:flex;align-items:center;gap:.6rem;padding:.62rem .75rem;border-radius:8px;border:none;background:transparent;color:var(--muted);font-family:'DM Sans',sans-serif;font-size:.86rem;font-weight:500;cursor:pointer;width:100%;text-align:left;transition:all .15s}
+.nb:hover{background:var(--bdr);color:var(--text)}
+.nb.on{background:#052e16;color:var(--green)}
+
+/* MAIN */
+.main{margin-left:220px;flex:1;padding:2rem;max-width:calc(100vw - 220px)}
+.page{display:none}.page.on{display:block}
+
+/* HEADER */
+.ptitle{font-family:'Syne',sans-serif;font-size:1.7rem;font-weight:800;letter-spacing:-.5px;margin-bottom:.2rem}
+.psub{color:var(--muted);font-size:.86rem;margin-bottom:1.6rem}
+
+/* STATS */
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:.9rem;margin-bottom:1.4rem}
+.stat{background:var(--card);border:1px solid var(--bdr);border-radius:12px;padding:1.1rem 1.3rem}
+.slbl{font-size:.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px}
+.sval{font-family:'Syne',sans-serif;font-size:1.9rem;font-weight:700;color:var(--green);margin-top:.2rem}
+
+/* CARD */
+.card{background:var(--card);border:1px solid var(--bdr);border-radius:12px;padding:1.3rem;margin-bottom:.9rem}
+.card.g{border-color:var(--gdim)}.card.b{border-color:#1d4ed8}
+.ctitle{font-family:'Syne',sans-serif;font-size:.92rem;font-weight:700;margin-bottom:.9rem}
+
+/* FORM */
+.frow{display:grid;grid-template-columns:1fr 1fr;gap:.9rem;margin-bottom:.9rem}
+.fcol{display:flex;flex-direction:column;gap:.3rem}
+.flbl{font-size:.7rem;color:var(--muted);font-weight:500;text-transform:uppercase;letter-spacing:.5px}
+select{background:var(--surf);border:1px solid var(--bdr);border-radius:8px;color:var(--text);padding:.58rem .8rem;font-family:'DM Sans',sans-serif;font-size:.86rem;width:100%;outline:none;cursor:pointer;transition:border-color .2s}
+select:focus{border-color:var(--green)}
+
+/* RADIO */
+.rrow{display:flex;gap:.6rem}
+.ropt{flex:1;padding:.55rem;border:1px solid var(--bdr);border-radius:8px;text-align:center;cursor:pointer;font-size:.82rem;color:var(--muted);transition:all .15s;user-select:none}
+.ropt.on{border-color:var(--green);color:var(--green);background:#052e16}
+
+/* SLIDER */
+.srow{display:flex;align-items:center;gap:.75rem}
+input[type=range]{flex:1;accent-color:var(--green);cursor:pointer}
+.sval{font-family:'Syne',sans-serif;font-weight:700;color:var(--green);font-size:.88rem;min-width:68px}
+
+/* BUTTON */
+.btn{width:100%;padding:.78rem;background:var(--green);color:#000;border:none;border-radius:8px;font-family:'Syne',sans-serif;font-weight:700;font-size:.9rem;cursor:pointer;margin-top:.9rem;transition:opacity .15s}
+.btn:hover{opacity:.85}
+
+/* PATH */
+.path{font-size:.82rem;color:var(--muted);line-height:1.7;margin-bottom:.9rem;word-break:break-word}
+.path span{color:var(--green);font-weight:500}
+
+/* METRICS */
+.metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:.65rem;margin:.9rem 0}
+.met{background:var(--surf);border:1px solid var(--bdr);border-radius:8px;padding:.7rem;text-align:center}
+.mlbl{font-size:.67rem;color:var(--muted);text-transform:uppercase;letter-spacing:.5px}
+.mval{font-family:'Syne',sans-serif;font-size:1.1rem;font-weight:700;margin-top:.18rem;color:var(--green)}
+.mval.y{color:var(--yellow)}.mval.s{font-size:.9rem}
+
+/* BADGE */
+.badge{display:inline-block;padding:.26rem .72rem;border-radius:999px;font-size:.74rem;font-weight:600;margin-top:.7rem}
+.badge.g{background:#052e16;color:var(--green)}
+.badge.y{background:#422006;color:var(--yellow)}
+.badge.r{background:#450a0a;color:var(--red)}
+
+/* TIP */
+.tip{background:#052e16;border:1px dashed var(--gdim);border-radius:8px;padding:.65rem .9rem;font-size:.82rem;color:#86efac;margin-top:.75rem}
+
+/* SECTION LABEL */
+.slb{font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:2px;color:var(--muted);margin:1.1rem 0 .55rem}
+
+/* TABLE */
+table{width:100%;border-collapse:collapse;font-size:.82rem}
+th{text-align:left;padding:.52rem .7rem;color:var(--muted);font-weight:500;font-size:.68rem;text-transform:uppercase;border-bottom:1px solid var(--bdr)}
+td{padding:.58rem .7rem;border-bottom:1px solid var(--bdr)}
+tr:last-child td{border-bottom:none}
+
+/* ALT RANK */
+.rank{font-size:.67rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:.4rem}
+.rank.best{color:var(--green)}
+
+/* BAR CHART */
+.brow{display:flex;align-items:center;gap:.7rem;margin:.4rem 0}
+.blbl{width:125px;font-size:.78rem;color:var(--muted);text-align:right;flex-shrink:0}
+.btrk{flex:1;background:var(--bdr);border-radius:999px;height:7px}
+.bfil{height:7px;border-radius:999px;background:var(--green);transition:width 1s ease;width:0}
+.bval{width:40px;font-size:.76rem;color:var(--green);font-weight:600}
+
+/* MAP */
+#map{width:100%;height:555px;background:radial-gradient(ellipse at center,#0d1b2a,#050810);border:1px solid var(--bdr);border-radius:12px;margin-top:.5rem}
+
+/* HOW LIST */
+.how{list-style:none;margin-top:.7rem}
+.how li{display:flex;gap:.75rem;padding:.55rem 0;border-bottom:1px solid var(--bdr);font-size:.86rem;color:var(--muted);line-height:1.5}
+.how li:last-child{border-bottom:none}
+.how .n{font-family:'Syne',sans-serif;font-weight:700;color:var(--green);min-width:18px}
+
+.loader{color:var(--muted);font-size:.86rem;padding:1.2rem 0}
+::-webkit-scrollbar{width:5px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--bdr);border-radius:3px}
