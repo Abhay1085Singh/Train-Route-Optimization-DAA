@@ -1,10 +1,3 @@
-# ============================================================
-#  MODULE  : Delay Prediction
-#  MEMBER  : Abhay Singh (Student ID: 240111781) — Team Lead
-#  ROLE    : Machine Learning & Dataset Module
-#  METHOD  : Random Forest Regression (100 Decision Trees)
-# ============================================================
-
 import numpy as np
 import pandas as pd
 from sklearn.ensemble import RandomForestRegressor

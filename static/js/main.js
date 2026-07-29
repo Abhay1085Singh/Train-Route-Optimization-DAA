@@ -1,10 +1,3 @@
-// ============================================================
-//  FILE    : main.js
-//  MEMBER  : Amit Pandey (Student ID: 240112243)
-//  ROLE    : Frontend & User Interface Module
-//  PURPOSE : Handles all page interactions and API calls
-// ============================================================
-
 let wt = 'distance', netLoaded = false, accLoaded = false;
 
 // ── NAVIGATION ──────────────────────────────────────────────

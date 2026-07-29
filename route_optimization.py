@@ -1,10 +1,3 @@
-# ============================================================
-#  MODULE  : Route Optimization
-#  MEMBER  : Anuj Rawat (Student ID: 24011939)
-#  ROLE    : Route Optimization — DAA Module
-#  METHOD  : Dijkstra's Algorithm using NetworkX + Manual
-# ============================================================
-
 import networkx as nx
 import heapq
 

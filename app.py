@@ -1,10 +1,3 @@
-# ============================================================
-#  MODULE  : Backend / Integration
-#  MEMBER  : Diksha (Student ID: 24012030)
-#  ROLE    : Integration, Testing & Documentation
-#  METHOD  : Flask REST API — connects all modules
-# ============================================================
-
 from flask import Flask, render_template, request, jsonify
 from datetime import datetime, timedelta
 from route_optimization import build_graph, get_shortest_path, get_alternate_routes
